@@ -7,11 +7,11 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
-import editor.PsiCustomTransformator;
+import dialogUtil.ConfColonBox;
+import invoker.Invoker;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.*;
 import java.util.Objects;
 
 public class ComfColon extends AnAction {
@@ -21,23 +21,22 @@ public class ComfColon extends AnAction {
         Editor editor = event.getData(CommonDataKeys.EDITOR);
         PsiElement elementAtCaret = PsiUtilBase.getElementAtCaret(Objects.requireNonNull(editor));
         PsiClass psiClass = PsiTreeUtil.getParentOfType(elementAtCaret, PsiClass.class);
+        ConfColonBox form = new ConfColonBox(project, true);
+        Invoker invoker = new Invoker(psiClass, project);
 
-        List<String> implInsertions = new ArrayList<>();
-        implInsertions.add("Runnable");
-        implInsertions.add("Random");
-        implInsertions.add("Readable");
+        form.show();
 
-        List<String> extInsertions = new ArrayList<>();
-        extInsertions.add("AnAction");
+        try {
+            invoker.invoke(form.takeResult());
+        } catch (IllegalStateException exception) {
+            exception.getMessage();
+        }
+        System.out.println(form.getExitCode());
 
-        PsiCustomTransformator.doTransform(implInsertions, "IMPL", psiClass, project);
-        PsiCustomTransformator.doTransform(extInsertions, "EXT", psiClass, project);
     }
 
     @Override
     public boolean isDumbAware() {
         return super.isDumbAware();
     }
-
-
 }

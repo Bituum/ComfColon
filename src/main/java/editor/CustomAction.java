@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElementFactory;
 import editor.referencelistHandler.ExtendListHandler;
 import editor.referencelistHandler.ImplementListHandler;
 import editor.referencelistHandler.ReferenceListHandler;
+import util.Keyword;
 
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class CustomAction {
     public void insertNewElements(List<String> insertion, String type) {
         ReferenceListHandler referenceListHandler;
 
-        if (type.equals("IMPL")) {
+        if (type.equals(Keyword.IMPLEMENTS)) {
             referenceListHandler = new ImplementListHandler(project, psiElementFactory, psiClass);
 
             insertion.forEach(referenceListHandler::updateReferenceList);
         }
-        else if (type.equals("EXT")) {
+        else if (type.equals(Keyword.EXTENDS)) {
             referenceListHandler = new ExtendListHandler(project, psiElementFactory, psiClass);
 
             insertion.forEach(referenceListHandler::updateReferenceList);
